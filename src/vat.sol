@@ -38,6 +38,7 @@ contract Vat {
         uint256 spot;  // Price with Safety Margin  [ray]
         uint256 line;  // Debt Ceiling              [rad]
         uint256 dust;  // Urn Debt Floor            [rad]
+        address gate;  // Join / Exit Adapter
     }
     struct Urn {
         uint256 ink;   // Locked Collateral  [wad]
@@ -116,8 +117,11 @@ contract Vat {
     }
 
     // --- Administration ---
-    function init(bytes32 ilk) public note auth {
+    function init(bytes32 ilk, address gate) public note auth {
+        require(ilks[ilk].gate == address(0));
         require(ilks[ilk].rate == 0);
+
+        ilks[ilk].gate = gate;
         ilks[ilk].rate = 10 ** 27;
     }
     function file(bytes32 what, uint data) public note auth {
@@ -133,7 +137,8 @@ contract Vat {
     }
 
     // --- Fungibility ---
-    function slip(bytes32 ilk, address usr, int256 wad) public note auth {
+    function slip(bytes32 ilk, address usr, int256 wad) public note {
+        require(msg.sender == ilks[ilk].gate);
         gem[ilk][usr] = add(gem[ilk][usr], wad);
     }
     function flux(bytes32 ilk, address src, address dst, uint256 wad) public note {
