@@ -153,4 +153,10 @@ contract Flopper is DSNote {
         require(bids[id].guy != address(0));
         delete bids[id];
     }
+    function dale(uint id) public {
+        require(live == 1);
+        require(bids[id].tic < now && bids[id].tic != 0 ||
+                bids[id].end < now);
+        delete bids[id];
+    }
 }
