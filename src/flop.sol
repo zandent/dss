@@ -144,4 +144,8 @@ contract Flopper is DSNote {
         vat.move(address(this), bids[id].guy, bids[id].bid);
         delete bids[id];
     }
+
+    function kill(uint id) public {
+        delete bids[id];
+    }
 }
