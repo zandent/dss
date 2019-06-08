@@ -148,7 +148,7 @@ contract Flopper is DSNote {
     function kill(uint id) public {
         delete bids[id];
     }
-    function tank(uint id) public note {
+    function tank(uint id) public {
         require(live == 0);
         require(bids[id].guy != address(0));
         delete bids[id];
