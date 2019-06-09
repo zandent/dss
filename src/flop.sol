@@ -159,4 +159,10 @@ contract Flopper is DSNote {
                 bids[id].end < now);
         delete bids[id];
     }
+    function look(uint id) public {
+        require(live == 1);
+        require(bids[id].tic > 0);
+        require(bids[id].end < now);
+        require(bids[id].guy != address(0));
+    }
 }
