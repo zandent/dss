@@ -146,7 +146,6 @@ contract Vat {
         dai[src] = sub(dai[src], rad);
         dai[dst] = add(dai[dst], rad);
     }
-
     // --- CDP Manipulation ---
     function frob(bytes32 i, address u, address v, address w, int dink, int dart) public note {
         Urn storage urn = urns[i][u];
@@ -156,27 +155,27 @@ contract Vat {
         urn.art = add(urn.art, dart);
         ilk.Art = add(ilk.Art, dart);
 
-        int dtab = mul(ilk.rate, dart);
-        uint tab = mul(urn.art, ilk.rate);
-
-        gem[i][v] = sub(gem[i][v], dink);
-        dai[w]    = add(dai[w],    dtab);
-        debt      = add(debt,      dtab);
-
         bool cool = dart <= 0;
         bool firm = dink >= 0;
-        bool calm = mul(ilk.Art, ilk.rate) <= ilk.line && debt <= Line;
-        bool safe = tab <= mul(urn.ink, ilk.spot);
+        bool safe = mul(urn.art, ilk.rate) <= mul(urn.ink, ilk.spot);
+        bool calm = mul(ilk.Art, ilk.rate) <= ilk.line;
+        bool ease = debt <= Line;
 
-        require((calm || cool) && (cool && firm || safe));
+        assembly { // iff (calm && ease || cool) && (cool && firm || safe)
+          if iszero(and(or(and(calm, ease), cool), or(and(cool, firm), safe))) { revert(0, 0) }
+        }
 
         require(wish(u, msg.sender) || cool && firm);
         require(wish(v, msg.sender) || !firm);
         require(wish(w, msg.sender) || !cool);
 
-        require(tab >= ilk.dust || urn.art == 0);
         require(ilk.rate != 0);
         require(live == 1);
+        require(mul(urn.art, ilk.rate) >= ilk.dust || urn.art == 0);
+
+        gem[i][v] = sub(gem[i][v], dink);
+        dai[w]    = add(dai[w],    mul(ilk.rate, dart));
+        debt      = add(debt,      mul(ilk.rate, dart));
     }
     // --- CDP Fungibility ---
     function fork(bytes32 ilk, address src, address dst, int dink, int dart) public note {
