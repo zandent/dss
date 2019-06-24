@@ -28,7 +28,7 @@ contract Vat {
     function hope(address usr) public { can[msg.sender][usr] = 1; }
     function nope(address usr) public { can[msg.sender][usr] = 0; }
     function wish(address bit, address usr) internal view returns (bool) {
-        return bit == usr || can[bit][usr] == 1;
+        return or(bit == usr, can[bit][usr] == 1);
     }
 
     // --- Data ---
@@ -114,7 +114,13 @@ contract Vat {
     function mul(uint x, uint y) internal pure returns (uint z) {
         require(y == 0 || (z = x * y) / y == x);
     }
-
+    function or(bool x, bool y) internal pure returns (bool z) {
+        assembly{ z := or(x, y)}
+    }
+    function and(bool x, bool y) internal pure returns (bool z) {
+        assembly{ z := and(x, y)}
+    }
+    
     // --- Administration ---
     function init(bytes32 ilk) public note auth {
         require(ilks[ilk].rate == 0);
@@ -155,27 +161,27 @@ contract Vat {
         urn.art = add(urn.art, dart);
         ilk.Art = add(ilk.Art, dart);
 
-        bool cool = dart <= 0;
-        bool firm = dink >= 0;
-        bool safe = mul(urn.art, ilk.rate) <= mul(urn.ink, ilk.spot);
-        bool calm = mul(ilk.Art, ilk.rate) <= ilk.line;
-        bool ease = debt <= Line;
-
-        assembly { // iff (calm && ease || cool) && (cool && firm || safe)
-          if iszero(and(or(and(calm, ease), cool), or(and(cool, firm), safe))) { revert(0, 0) }
-        }
-
-        require(wish(u, msg.sender) || cool && firm);
-        require(wish(v, msg.sender) || !firm);
-        require(wish(w, msg.sender) || !cool);
-
-        require(ilk.rate != 0);
-        require(live == 1);
-        require(mul(urn.art, ilk.rate) >= ilk.dust || urn.art == 0);
+        int dtab = mul(ilk.rate, dart);
+        uint tab = mul(urn.art, ilk.rate);
 
         gem[i][v] = sub(gem[i][v], dink);
-        dai[w]    = add(dai[w],    mul(ilk.rate, dart));
-        debt      = add(debt,      mul(ilk.rate, dart));
+        dai[w]    = add(dai[w],    dtab);
+        debt      = add(debt,      dtab);
+
+        bool cool = dart <= 0;
+        bool firm = dink >= 0;
+        bool calm = and(mul(ilk.Art, ilk.rate) <= ilk.line, debt <= Line);
+        bool safe = tab <= mul(urn.ink, ilk.spot);
+
+        require(and(or(calm, cool), or(and(cool, firm), safe)));
+
+        require(or(wish(u, msg.sender), and(cool, firm)));
+        require(or(wish(v, msg.sender), !firm));
+        require(or(wish(w, msg.sender), !cool));
+
+        require(or(tab >= ilk.dust, urn.art == 0));
+        require(ilk.rate != 0);
+        require(live == 1);
     }
     // --- CDP Fungibility ---
     function fork(bytes32 ilk, address src, address dst, int dink, int dart) public note {
