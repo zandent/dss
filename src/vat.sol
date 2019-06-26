@@ -154,8 +154,11 @@ contract Vat {
     }
     // --- CDP Manipulation ---
     function frob(bytes32 i, address u, address v, address w, int dink, int dart) public note {
+        require(live == 1);
         Urn storage urn = urns[i][u];
         Ilk storage ilk = ilks[i];
+        
+        require(ilk.rate != 0);
 
         urn.ink = add(urn.ink, dink);
         urn.art = add(urn.art, dart);
@@ -163,6 +166,8 @@ contract Vat {
 
         int dtab = mul(ilk.rate, dart);
         uint tab = mul(urn.art, ilk.rate);
+
+        require(or(tab >= ilk.dust, urn.art == 0));
 
         gem[i][v] = sub(gem[i][v], dink);
         dai[w]    = add(dai[w],    dtab);
@@ -174,14 +179,9 @@ contract Vat {
         bool safe = tab <= mul(urn.ink, ilk.spot);
 
         require(and(or(calm, cool), or(and(cool, firm), safe)));
-
         require(or(wish(u, msg.sender), and(cool, firm)));
         require(or(wish(v, msg.sender), !firm));
         require(or(wish(w, msg.sender), !cool));
-
-        require(or(tab >= ilk.dust, urn.art == 0));
-        require(ilk.rate != 0);
-        require(live == 1);
     }
     // --- CDP Fungibility ---
     function fork(bytes32 ilk, address src, address dst, int dink, int dart) public note {
