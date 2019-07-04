@@ -92,13 +92,13 @@ contract Vat {
     // --- Math ---
     function add(uint x, int y) internal pure returns (uint z) {
         z = x + uint(y);
-        require(either(y >= 0, z <= x));
-        require(either(y <= 0, z >= x));
+        require(y >= 0 || z <= x);
+        require(y <= 0 || z >= x);
     }
     function sub(uint x, int y) internal pure returns (uint z) {
         z = x - uint(y);
-        require(either(y <= 0, z <= x));
-        require(either(y >= 0, z >= x));
+        require(y <= 0 || z <= x);
+        require(y >= 0 || z >= x);
     }
     function mul(uint x, int y) internal pure returns (int z) {
         z = int(x) * y;
@@ -156,8 +156,13 @@ contract Vat {
 
     // --- CDP Manipulation ---
     function frob(bytes32 i, address u, address v, address w, int dink, int dart) public note {
+        // system is live
+        require(live == 1);
+
         Urn memory urn = urns[i][u];
         Ilk memory ilk = ilks[i];
+        // ilk has been initialised
+        require(ilk.rate != 0);
 
         urn.ink = add(urn.ink, dink);
         urn.art = add(urn.art, dart);
@@ -165,10 +170,6 @@ contract Vat {
 
         int dtab = mul(ilk.rate, dart);
         uint tab = mul(urn.art, ilk.rate);
-
-        gem[i][v] = sub(gem[i][v], dink);
-        dai[w]    = add(dai[w],    dtab);
-        debt      = add(debt,      dtab);
 
         // either debt has decreased, or debt ceilings are not exceeded
         require(either(dart <= 0, both(mul(ilk.Art, ilk.rate) <= ilk.line, debt <= Line)));
@@ -184,10 +185,10 @@ contract Vat {
 
         // urn has no debt, or a non-dusty amount
         require(either(urn.art == 0, tab >= ilk.dust));
-        // ilk has been initialised
-        require(ilk.rate != 0);
-        // system is live
-        require(live == 1);
+
+        gem[i][v] = sub(gem[i][v], dink);
+        dai[w]    = add(dai[w],    dtab);
+        debt      = add(debt,      dtab);
 
         urns[i][u] = urn;
         ilks[i]    = ilk;
