@@ -80,11 +80,12 @@ contract Spotter is DSNote {
 
     // --- Update value ---
     function poke(bytes32 ilk) public {
+        uint256 spot;
         (bytes32 val, bool zzz) = ilks[ilk].pip.peek();
         if (zzz) {
-            uint256 spot = rdiv(rdiv(mul(uint(val), 10 ** 9), par), ilks[ilk].mat);
-            vat.file(ilk, "spot", spot);
-            emit Poke(ilk, val, spot);
+            spot = rdiv(rdiv(mul(uint(val), 10 ** 9), par), ilks[ilk].mat);
         }
+        vat.file(ilk, "spot", spot);
+        emit Poke(ilk, val, spot);
     }
 }
