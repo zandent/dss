@@ -15,28 +15,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "./lib.sol";
 
-contract FlopLike {
-    function kick(address gal, uint lot, uint bid) external returns (uint);
-    function cage() external;
-    function live() external returns (uint);
+abstract contract FlopLike {
+    function kick(address gal, uint lot, uint bid) external virtual returns (uint);
+    function cage() external virtual;
+    function live() external virtual returns (uint);
 }
 
-contract FlapLike {
-    function kick(uint lot, uint bid) external returns (uint);
-    function cage(uint) external;
-    function live() external returns (uint);
+abstract contract FlapLike {
+    function kick(uint lot, uint bid) external virtual returns (uint);
+    function cage(uint) external virtual;
+    function live() external virtual returns (uint);
 }
 
-contract VatLike {
-    function dai (address) external view returns (uint);
-    function sin (address) external view returns (uint);
-    function heal(uint256) external;
-    function hope(address) external;
-    function nope(address) external;
+abstract contract VatLike {
+    function dai (address) external view virtual returns (uint);
+    function sin (address) external view virtual returns (uint);
+    function heal(uint256) external virtual;
+    function hope(address) external virtual;
+    function nope(address) external virtual;
 }
 
 contract Vow is LibNote {

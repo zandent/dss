@@ -15,20 +15,20 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "./lib.sol";
 
-contract VatLike {
-    function move(address,address,uint) external;
-    function suck(address,address,uint) external;
+abstract contract VatLike {
+    function move(address,address,uint) external virtual;
+    function suck(address,address,uint) external virtual;
 }
-contract GemLike {
-    function mint(address,uint) external;
+abstract contract GemLike {
+    function mint(address,uint) external virtual;
 }
-contract VowLike {
-    function Ash() public returns (uint);
-    function kiss(uint) external;
+abstract contract VowLike {
+    function Ash() public virtual returns (uint);
+    function kiss(uint) external virtual;
 }
 
 /*

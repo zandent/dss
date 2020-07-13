@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "./lib.sol";
 
-contract VatLike {
-    function ilks(bytes32) external returns (
+abstract contract VatLike {
+    function ilks(bytes32) external virtual returns (
         uint256 Art,   // [wad]
         uint256 rate   // [ray]
     );
-    function fold(bytes32,address,int) external;
+    function fold(bytes32,address,int) external virtual;
 }
 
 contract Jug is LibNote {

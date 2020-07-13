@@ -15,32 +15,32 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "./lib.sol";
 
-contract Kicker {
+abstract contract Kicker {
     function kick(address urn, address gal, uint tab, uint lot, uint bid)
-        public returns (uint);
+        public virtual returns (uint);
 }
 
-contract VatLike {
-    function ilks(bytes32) external view returns (
+abstract contract VatLike {
+    function ilks(bytes32) external view virtual returns (
         uint256 Art,   // [wad]
         uint256 rate,  // [ray]
         uint256 spot   // [ray]
     );
-    function urns(bytes32,address) external view returns (
+    function urns(bytes32,address) external view virtual returns (
         uint256 ink,   // [wad]
         uint256 art    // [wad]
     );
-    function grab(bytes32,address,address,address,int,int) external;
-    function hope(address) external;
-    function nope(address) external;
+    function grab(bytes32,address,address,address,int,int) external virtual;
+    function hope(address) external virtual;
+    function nope(address) external virtual;
 }
 
-contract VowLike {
-    function fess(uint) external;
+abstract contract VowLike {
+    function fess(uint) external virtual;
 }
 
 contract Cat is LibNote {

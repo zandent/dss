@@ -16,47 +16,47 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "./lib.sol";
 
-contract VatLike {
-    function dai(address) external view returns (uint256);
-    function ilks(bytes32 ilk) external returns (
+abstract contract VatLike {
+    function dai(address) external view virtual returns (uint256);
+    function ilks(bytes32 ilk) external virtual returns (
         uint256 Art,   // [wad]
         uint256 rate,  // [ray]
         uint256 spot,  // [ray]
         uint256 line,  // [rad]
         uint256 dust   // [rad]
     );
-    function urns(bytes32 ilk, address urn) external returns (
+    function urns(bytes32 ilk, address urn) external virtual returns (
         uint256 ink,   // [wad]
         uint256 art    // [wad]
     );
-    function debt() external returns (uint256);
-    function move(address src, address dst, uint256 rad) external;
-    function hope(address) external;
-    function flux(bytes32 ilk, address src, address dst, uint256 rad) external;
-    function grab(bytes32 i, address u, address v, address w, int256 dink, int256 dart) external;
-    function suck(address u, address v, uint256 rad) external;
-    function cage() external;
+    function debt() external virtual returns (uint256);
+    function move(address src, address dst, uint256 rad) external virtual;
+    function hope(address) external virtual;
+    function flux(bytes32 ilk, address src, address dst, uint256 rad) external virtual;
+    function grab(bytes32 i, address u, address v, address w, int256 dink, int256 dart) external virtual;
+    function suck(address u, address v, uint256 rad) external virtual;
+    function cage() external virtual;
 }
-contract CatLike {
-    function ilks(bytes32) external returns (
+abstract contract CatLike {
+    function ilks(bytes32) external virtual returns (
         address flip,
         uint256 chop,  // [ray]
         uint256 lump   // [rad]
     );
-    function cage() external;
+    function cage() external virtual;
 }
-contract PotLike {
-    function cage() external;
+abstract contract PotLike {
+    function cage() external virtual;
 }
-contract VowLike {
-    function cage() external;
+abstract contract VowLike {
+    function cage() external virtual;
 }
-contract Flippy {
-    function bids(uint id) external view returns (
+abstract contract Flippy {
+    function bids(uint id) external view virtual returns (
         uint256 bid,   // [rad]
         uint256 lot,   // [wad]
         address guy,
@@ -66,20 +66,20 @@ contract Flippy {
         address gal,
         uint256 tab    // [rad]
     );
-    function yank(uint id) external;
+    function yank(uint id) external virtual;
 }
 
-contract PipLike {
-    function read() external view returns (bytes32);
+abstract contract PipLike {
+    function read() external view virtual returns (bytes32);
 }
 
-contract Spotty {
-    function par() external view returns (uint256);
-    function ilks(bytes32) external view returns (
+abstract contract Spotty {
+    function par() external view virtual returns (uint256);
+    function ilks(bytes32) external view virtual returns (
         PipLike pip,
         uint256 mat    // [ray]
     );
-    function cage() external;
+    function cage() external virtual;
 }
 
 /*

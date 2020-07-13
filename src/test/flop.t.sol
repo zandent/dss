@@ -1,4 +1,4 @@
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import {DSTest}  from "ds-test/test.sol";
 import {DSToken} from "ds-token/token.sol";
@@ -6,8 +6,8 @@ import "../flop.sol";
 import "../vat.sol";
 
 
-contract Hevm {
-    function warp(uint256) public;
+abstract contract Hevm {
+    function warp(uint256) public virtual;
 }
 
 contract Guy {
@@ -62,11 +62,8 @@ contract Gal {
 
 contract Vatish is DSToken('') {
     uint constant ONE = 10 ** 27;
-    function move(address src, address dst, uint rad) public {
-        super.move(src, dst, rad);
-    }
     function hope(address usr) public {
-         super.approve(usr);
+        approve(usr, uint(-1));
     }
     function dai(address usr) public view returns (uint) {
          return super.balanceOf(usr);

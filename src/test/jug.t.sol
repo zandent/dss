@@ -1,4 +1,4 @@
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "ds-test/test.sol";
 
@@ -6,12 +6,12 @@ import {Jug} from "../jug.sol";
 import {Vat} from "../vat.sol";
 
 
-contract Hevm {
-    function warp(uint256) public;
+abstract contract Hevm {
+    function warp(uint256) public virtual;
 }
 
-contract VatLike {
-    function ilks(bytes32) public view returns (
+abstract contract VatLike {
+    function ilks(bytes32) public view virtual returns (
         uint256 Art,
         uint256 rate,
         uint256 spot,

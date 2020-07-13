@@ -1,4 +1,4 @@
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "ds-test/test.sol";
 import "ds-token/token.sol";
@@ -14,8 +14,8 @@ import {Flopper} from './flop.t.sol';
 import {Flapper} from './flap.t.sol';
 
 
-contract Hevm {
-    function warp(uint256) public;
+abstract contract Hevm {
+    function warp(uint256) public virtual;
 }
 
 contract TestVat is Vat {
@@ -54,7 +54,7 @@ contract Usr {
     function try_call(address addr, bytes calldata data) external returns (bool) {
         bytes memory _data = data;
         assembly {
-            let ok := call(gas, addr, 0, add(_data, 0x20), mload(_data), 0, 0)
+            let ok := call(gas(), addr, 0, add(_data, 0x20), mload(_data), 0, 0)
             let free := mload(0x40)
             mstore(free, ok)
             mstore(0x40, add(free, 32))
@@ -365,7 +365,7 @@ contract JoinTest is DSTest {
         string memory sig = "exit(address,uint256)";
         (ok,) = address(daiA).call(abi.encodeWithSignature(sig, usr, wad));
     }
-    function () external payable {}
+    fallback () external payable {}
     function test_gem_join() public {
         gem.mint(20 ether);
         gem.approve(address(gemA), 20 ether);
@@ -431,7 +431,7 @@ contract JoinTest is DSTest {
     }
 }
 
-contract FlipLike {
+abstract contract FlipLike {
     struct Bid {
         uint256 bid;
         uint256 lot;
@@ -442,7 +442,7 @@ contract FlipLike {
         address gal;
         uint256 tab;
     }
-    function bids(uint) public view returns (
+    function bids(uint) public view virtual returns (
         uint256 bid,
         uint256 lot,
         address guy,

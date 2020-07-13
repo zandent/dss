@@ -1,11 +1,11 @@
-pragma solidity ^0.5.12;
+pragma solidity >=0.6.7;
 
 import "ds-test/test.sol";
 import {Vat} from '../vat.sol';
 import {Pot} from '../pot.sol';
 
-contract Hevm {
-    function warp(uint256) public;
+abstract contract Hevm {
+    function warp(uint256) public virtual;
 }
 
 contract DSRTest is DSTest {
