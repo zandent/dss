@@ -31,7 +31,7 @@ import {Flapper} from '../flap.sol';
 import {Flopper} from '../flop.sol';
 import {GemJoin} from '../join.sol';
 import {End}  from '../end.sol';
-import {Spotter} from '../spot.sol';
+import {Spotter} from '../spot_sig_parsed.sol';
 
 interface Hevm {
     function warp(uint256) external;
