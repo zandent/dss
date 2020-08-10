@@ -146,15 +146,18 @@ contract Spotter is LibNote {
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
     }
+    
+    function getPrice() public returns(bytes32) {
+        return price;
+    }
 
     function cage() external note auth {
         live = 0;
     }
     
-    constructor(address vat_) public {
+    constructor() public {
    updatePrice();
         wards[msg.sender] = 1;
-        vat = VatLike(vat_);
         par = ONE;
         live = 1;
     }

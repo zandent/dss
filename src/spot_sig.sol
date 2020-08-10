@@ -97,14 +97,17 @@ contract Spotter is LibNote {
     function poke_to_detach(address osm_addr) external {
         updatePrice.detach(osm_addr.PriceFeedUpdate);
     }
+    
+    function getPrice() public returns(bytes32) {
+        return price;
+    }
 
     function cage() external note auth {
         live = 0;
     }
     // --- Init ---
-    constructor(address vat_) public {
+    constructor() public {
         wards[msg.sender] = 1;
-        vat = VatLike(vat_);
         par = ONE;
         live = 1;
     }

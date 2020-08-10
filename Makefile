@@ -10,7 +10,7 @@ clean:
 
 build: clean
 	mkdir -p out/
-	solc --overwrite -o out ${remappings} ${opts} /=/ ${files}
+	solc --overwrite -o out ${remappings} ${opts} /=/ src/spot_sig_parsed.sol
 
 test: build
 	hevm dapp-test --json-file out/dss.json
