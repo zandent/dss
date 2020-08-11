@@ -16,6 +16,7 @@
 pragma solidity >=0.5.12;
 
 import "./lib.sol";
+import "osm/src/osm.sol";
 
 interface VatLike {
     function file(bytes32, bytes32, uint) external;
@@ -25,7 +26,7 @@ interface PipLike {
     function peek() external returns (bytes32, bool);
 }
 
-contract Spotter is LibNote {
+contract Spotter_ORI is LibNote {
     // --- Auth ---
     mapping (address => uint) public wards;
     function rely(address guy) external note auth { wards[guy] = 1;  }
@@ -54,6 +55,8 @@ contract Spotter is LibNote {
       bytes32 val,  // [wad]
       uint256 spot  // [ray]
     );
+
+    bytes32 public price;
 
     // --- Init ---
     constructor(address vat_) public {
@@ -97,7 +100,16 @@ contract Spotter is LibNote {
         vat.file(ilk, "spot", spot);
         emit Poke(ilk, val, spot);
     }
-
+    // --- Update value ---
+    function simple_poke(address osm_addr) external {
+        (bytes32 val, bool has) = OSM_ORI(osm_addr).peek();
+        if(has){
+            price = val;
+        }
+    }
+    function getPrice() public returns(bytes32) {
+        return price;
+    }
     function cage() external note auth {
         live = 0;
     }
